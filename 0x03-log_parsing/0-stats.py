@@ -29,7 +29,8 @@ regex = re.compile(
 
 # Global variables to store total file size and lines by status code
 total_file_size: int = 0
-lines_by_status_code: Dict[str, int] = {}
+lines_by_status_code: Dict[str, int] = {'200': 0, '301': 0, '400': 0, '401': 0,
+                                        '403': 0, '404': 0, '405': 0, '500': 0}
 
 
 def print_data() -> None:
@@ -66,8 +67,10 @@ def parse_log() -> None:
             total_file_size += int(match.group('size'))
             status_code = match.group('status')
 
-            lines_by_status_code[status_code] \
-                = lines_by_status_code.get(status_code, 0) + 1
+            if lines_by_status_code.get(status_code):
+                lines_by_status_code[status_code] += 1
+            else:
+                continue
 
             if line_count % 10 == 0:
                 print_data()
